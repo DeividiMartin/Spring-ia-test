@@ -45,7 +45,7 @@ public class OpenAIController {
          Map<String, Object > mapa = new HashMap<String, Object>();
         mapa.put("question", mensagem.mensagem());
         Prompt prompt = tamplate.apply(mapa);
-        return model.generate(mensagem.mensagem());
+        return model.generate(prompt.text());
     }
 
 
