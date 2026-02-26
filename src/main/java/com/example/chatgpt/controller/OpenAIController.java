@@ -48,5 +48,18 @@ public class OpenAIController {
         return model.generate(prompt.text());
     }
 
+    @PostMapping("/review")
+    public String revisarCodigo(@RequestBody MensagemDTO mensagem) {
+
+        String prompt = """
+            Você é um especialista em Java backend.
+            Analise o seguinte código e sugira melhorias:
+            
+            %s
+            """.formatted(mensagem.mensagem());
+
+        return model.generate(prompt);
+    }
+
 
 }
