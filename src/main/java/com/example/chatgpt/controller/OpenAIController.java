@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -59,6 +60,21 @@ public class OpenAIController {
             """.formatted(mensagem.mensagem());
 
         return model.generate(prompt);
+    }
+
+    @PostMapping("/chat-config")
+    public String chatConfig(
+            @RequestBody MensagemDTO mensagem,
+            @RequestParam double temperature,
+            @RequestParam String modelName
+    ) {
+        ChatLanguageModel customModel = new OpenAiChatModel.OpenAiChatModelBuilder()
+                .apiKey(env.getProperty("openai.api.key"))
+                .temperature(temperature)
+                .modelName(modelName)
+                .build();
+
+        return customModel.generate(mensagem.mensagem());
     }
 
 
