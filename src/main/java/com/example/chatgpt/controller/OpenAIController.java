@@ -7,6 +7,7 @@ import dev.langchain4j.model.input.PromptTemplate;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -75,6 +76,31 @@ public class OpenAIController {
                 .build();
 
         return customModel.generate(mensagem.mensagem());
+    }
+
+    @PostMapping("/explain")
+    public ResponseEntity<Map<String, Object>> explicarCodigo(@RequestBody MensagemDTO mensagem) {
+
+        String prompt = """
+        Você é um especialista em Java backend.
+        Explique detalhadamente o seguinte código.
+        Separe sua resposta em:
+        1) O que o código faz
+        2) Pontos importantes
+        3) Possíveis melhorias
+        
+        Código:
+        %s
+        """.formatted(mensagem.mensagem());
+
+        String resposta = model.generate(prompt);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("model", "default");
+        response.put("temperature", "default");
+        response.put("resposta", resposta);
+
+        return ResponseEntity.ok(response);
     }
 
 
